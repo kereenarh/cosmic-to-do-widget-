@@ -1,8 +1,8 @@
 # Pixel Cloud To-Do Widget for Übersicht
 
-A retro pixel-art to-do list desktop widget for macOS Übersicht.
+A retro pixel-art to-do list desktop widget for macOS Übersicht. Background art credit to Victoja Borison (viktojadesigns.etsy.com)
 
-![Widget Preview](preview.png)
+![Widget Preview](screenshot.png)
 
 ## Features
 - Add, complete, and delete tasks directly from your desktop
