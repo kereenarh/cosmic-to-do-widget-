@@ -1,6 +1,6 @@
-# Pixel Cloud To-Do Widget for Übersicht
+# Cosmic To-Do Widget for Übersicht
 
-A retro pixel-art to-do list desktop widget for macOS Übersicht. Background art credit to Victoja Borison (viktojadesigns.etsy.com)
+A retro cosmic to-do list desktop widget for macOS Übersicht. Background art credit to Victoja Borison (viktojadesigns.etsy.com)
 
 ![Widget Preview](screenshot.png)
 
