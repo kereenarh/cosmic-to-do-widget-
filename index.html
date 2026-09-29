@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixel Cloud To-Do Widget</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background: #1a1528;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Widget Main Frame */
+    .widget-container {
+      width: 310px;
+      min-height: 420px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      background-color: #2b1f4a;
+    }
+
+    .bg-illustration {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("planet_bg.png");
+      background-repeat: no-repeat;
+      background-position: center bottom;
+      background-size: cover;
+      z-index: 1;
+      image-rendering: pixelated;
+    }
+
+    /* Content Area */
+    .content-box {
+      position: relative;
+      background: #5eebda;
+      margin: 14px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 2px solid #715eeb;
+      backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 2;
+    }
+
+    .title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #2e1d52;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    /* Add Task Form */
+    .input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .task-input {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 13px;
+      border: 2px solid #715eeb;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #1e1b4b;
+      outline: none;
+      user-select: text !important;
+      cursor: text;
+    }
+
+    .task-input:focus {
+      border-color: #715eeb;
+      box-shadow: 0 0 0 2px #715eeb;
+    }
+
+    /* Buttons */
+    .icon-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      flex-shrink: 0;
+      transition: transform 0.1s ease;
+    }
+
+    .icon-btn:active {
+      transform: scale(0.9);
+    }
+
+    .icon-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+
+    /* To-Do Items List */
+    .todo-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 220px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(88, 75, 125, 0.3);
+    }
+
+    .todo-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    /* Star Checkbox */
+    .star-checkbox {
+      width: 18px;
+      height: 18px;
+      display: inline-block;
+      font-size: 18px;
+      line-height: 18px;
+      text-align: center;
+      color: #9284ba;
+    }
+
+    .todo-text {
+      font-size: 13px;
+      color: #241442;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      user-select: text;
+    }
+
+    /* Completed state */
+    .todo-item.completed .todo-text {
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    .todo-item.completed .star-checkbox {
+      color: #f6b400;
+      text-shadow: 0 0 4px rgba(246, 180, 0, 0.6);
+    }
+
+    /* Confetti Animation Layer */
+    .confetti-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    .pixel-confetti {
+      position: absolute;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      animation: pixelFloat 5s ease-out forwards;
+    }
+
+    @keyframes pixelFloat {
+      0% {
+        opacity: 0;
+        transform: translateY(0px) rotate(0deg) scale(0.6);
+      }
+      12% {
+        opacity: 1;
+        transform: translateY(-40px) rotate(45deg) scale(1.1);
+      }
+      40% {
+        opacity: 0.95;
+        transform: translateY(-110px) rotate(110deg) scale(1);
+      }
+      75% {
+        opacity: 0.85;
+        transform: translateY(-180px) rotate(210deg) scale(0.95);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-240px) rotate(320deg) scale(0.8);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="widget-container">
+    <div class="bg-illustration"></div>
+    <div id="confetti-layer" class="confetti-container"></div>
+
+    <div class="content-box">
+      <div class="title">Tasks</div>
+
+      <form id="todo-form" class="input-row">
+        <input 
+          type="text" 
+          id="task-input" 
+          class="task-input" 
+          placeholder="New task..." 
+          autocomplete="off"
+        />
+        <button type="submit" class="icon-btn" title="Add item">
+          <img src="yellow_plus.png" alt="+" />
+        </button>
+      </form>
+
+      <ul id="todo-list" class="todo-list"></ul>
+    </div>
+  </div>
+
+  <script>
+    const CONFETTI_COLORS = [
+      "#ff4d8d", // Pink
+      "#12e2a3", // Teal
+      "#7ee7fc", // Baby Blue
+      "#ffd23f"  // Bright Yellow
+    ];
+
+    const DELETE_BUTTON_SRC = "blue_minus.png";
+
+    const form = document.getElementById("todo-form");
+    const input = document.getElementById("task-input");
+    const list = document.getElementById("todo-list");
+    const confettiLayer = document.getElementById("confetti-layer");
+
+    let tasks = JSON.parse(localStorage.getItem("cloud_tasks") || "[]");
+
+    function saveTasks() {
+      localStorage.setItem("cloud_tasks", JSON.stringify(tasks));
+    }
+
+    function renderTasks() {
+      list.innerHTML = "";
+      tasks.forEach((task, index) => {
+        const li = document.createElement("li");
+        li.className = `todo-item ${task.completed ? "completed" : ""}`;
+
+        const leftDiv = document.createElement("div");
+        leftDiv.className = "todo-left";
+        leftDiv.onclick = () => toggleTask(index);
+
+        const star = document.createElement("span");
+        star.className = "star-checkbox";
+        star.innerHTML = task.completed ? "★" : "☆";
+
+        const text = document.createElement("span");
+        text.className = "todo-text";
+        text.textContent = task.text;
+
+        leftDiv.appendChild(star);
+        leftDiv.appendChild(text);
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "icon-btn";
+        delBtn.title = "Delete item";
+        delBtn.onclick = (e) => {
+          e.stopPropagation();
+          deleteTask(index);
+        };
+
+        const delImg = document.createElement("img");
+        delImg.src = DELETE_BUTTON_SRC;
+        delImg.alt = "x";
+        delBtn.appendChild(delImg);
+
+        li.appendChild(leftDiv);
+        li.appendChild(delBtn);
+        list.appendChild(li);
+      });
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const val = input.value.trim();
+      if (!val) return;
+
+      tasks.push({ text: val, completed: false });
+      input.value = "";
+      saveTasks();
+      renderTasks();
+    });
+
+    function toggleTask(index) {
+      const isNowCompleted = !tasks[index].completed;
+      tasks[index].completed = isNowCompleted;
+      saveTasks();
+      renderTasks();
+
+      if (isNowCompleted) {
+        triggerConfetti();
+      }
+    }
+
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      saveTasks();
+      renderTasks();
+    }
+
+    function triggerConfetti() {
+      const pieceCount = 28;
+
+      for (let i = 0; i < pieceCount; i++) {
+        const piece = document.createElement("div");
+        const size = Math.floor(Math.random() * 5) + 6;
+
+        piece.className = "pixel-confetti";
+        piece.style.backgroundColor = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+        piece.style.width = `${size}px`;
+        piece.style.height = `${size}px`;
+        piece.style.left = `${Math.random() * 84 + 8}%`;
+        piece.style.bottom = `${Math.random() * 50 + 10}px`;
+        piece.style.animationDelay = `${(Math.random() * 0.45).toFixed(2)}s`;
+
+        confettiLayer.appendChild(piece);
+
+        setTimeout(() => {
+          piece.remove();
+        }, 5000);
+      }
+    }
+
+    renderTasks();
+  </script>
+</body>
+</html>
